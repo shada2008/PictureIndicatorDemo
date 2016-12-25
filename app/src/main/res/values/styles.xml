@@ -1,0 +1,23 @@
+<resources>
+
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+    </style>
+    <!--自定义属性-->
+    <declare-styleable name="PictureIndicatorView">
+        <!--用作滑块的图片资源-->
+        <attr name="indicator" format="reference"></attr>
+        <!--初始状况下滑块距离屏幕左边的距离-->
+        <attr name="initTranslation" format="dimension"></attr>
+        <!--可见滑块数量-->
+        <attr name="visibleCount" format="integer"></attr>
+        <!--文字被选中的颜色-->
+        <attr name="titleseletedcolor" format="color"></attr>
+        <!--标题默认颜色-->
+        <attr name="titlenormalcolor" format="color"/>
+    </declare-styleable>
+</resources>
