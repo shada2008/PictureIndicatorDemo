@@ -7,7 +7,6 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.RectF;
-import android.support.v4.view.ViewPager;
 import android.util.AttributeSet;
 import android.view.Gravity;
 import android.view.View;
@@ -20,17 +19,18 @@ import java.util.List;
  * Created by cl150 on 2016/12/25.
  */
 
-public class PictureIndicatorView extends LinearLayout {
+public class PictureIndicatorView extends LinearLayout implements  OnTabChangeListener{
     private Bitmap bitmap;
     private float initTranslation;
     private int visibleTabCount;
     private RectF rectF;
-    private ViewPager mViewPager;
     private float mTranslationX;
-    private OnTabChangeListener mOnTabChangeListener;
     private int titleNormalColor;
     private int titleSelectedColor;
-
+    private onTabChanged mOnTabChangeListener;
+    public void setmOnTabChangeListener(onTabChanged mOnTabChangeListener) {
+        this.mOnTabChangeListener = mOnTabChangeListener;
+    }
     public PictureIndicatorView(Context context) {
         this(context,null);
     }
@@ -46,7 +46,7 @@ public class PictureIndicatorView extends LinearLayout {
                 R.mipmap.ic_launcher);
         bitmap = BitmapFactory.decodeResource(getResources(), resourceId);
         initTranslation=array.getDimension(R.styleable.PictureIndicatorView_initTranslation,0);
-        visibleTabCount=array.getInt(R.styleable.PictureIndicatorView_visibleCount,3);
+        visibleTabCount=array.getInt(R.styleable.PictureIndicatorView_visibleCount,4);
         titleNormalColor = array.getColor(R.styleable.PictureIndicatorView_titlenormalcolor, Color.BLACK);
         titleSelectedColor = array.getColor(R.styleable.PictureIndicatorView_titleseletedcolor,
                 Color.GREEN);
@@ -94,38 +94,14 @@ public class PictureIndicatorView extends LinearLayout {
             getChildAt(i).setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    mViewPager.setCurrentItem(finalI);
+                    if(mOnTabChangeListener!=null){
+                        mOnTabChangeListener.setCurrentTab(finalI);
+                    }
                 }
             });
         }
     }
-    public void setUpWidthViewPager(ViewPager viewPager, int pos) {
-        mViewPager = viewPager;
-        mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-            @Override
-            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-                scroll(position, positionOffset);
-                if(mOnTabChangeListener!=null){
-                    mOnTabChangeListener.onPageScrolled(position,positionOffset,positionOffsetPixels);
-                }
-            }
-            @Override
-            public void onPageSelected(int position) {
-                resetTextViewColor(position);
-                if(mOnTabChangeListener!=null){
-                    mOnTabChangeListener.onPageSelected(position);
-                }
-            }
-            @Override
-            public void onPageScrollStateChanged(int state) {
-                if(mOnTabChangeListener!=null){
-                    mOnTabChangeListener.onPageScrollStateChanged(state);
-                }
-            }
-        });
-        mViewPager.setCurrentItem(pos);
-        resetTextViewColor(pos);
-    }
+
     //改变indicator的颜色
     private void resetTextViewColor(int position) {
         for (int i = 0; i < getChildCount(); i++) {
@@ -140,6 +116,7 @@ public class PictureIndicatorView extends LinearLayout {
         }
     }
     private void scroll(int position, float positionOffset) {
+        resetTextViewColor(position);
         mTranslationX =  (getMeasuredWidth() / visibleTabCount )*  (position + positionOffset);
         int tabWidth = getScreenWidth() / visibleTabCount;
         if (positionOffset > 0 && (position >= visibleTabCount - 2) && getChildCount() > visibleTabCount&& position < (getChildCount()-2)) {
@@ -159,12 +136,20 @@ public class PictureIndicatorView extends LinearLayout {
     private int dp2px(int dp) {
         return (int) (getResources().getDisplayMetrics().density * dp + 0.5);
     }
-    public interface OnTabChangeListener{
-        void onPageScrolled(int position, float positionOffset, int positionOffsetPixels);
-        void onPageSelected(int position);
-        void onPageScrollStateChanged(int state);
+
+
+
+    @Override
+    public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+        scroll(position, positionOffset);
     }
-    public void setOnTabChangeListener(OnTabChangeListener onTabChangeListener){
-        this.mOnTabChangeListener=onTabChangeListener;
+
+    @Override
+    public void onPageSelected(int position) {}
+
+    @Override
+    public void onPageScrollStateChanged(int state) {}
+    public interface onTabChanged{
+        void setCurrentTab(int currentItem);
     }
 }
