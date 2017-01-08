@@ -47,11 +47,14 @@ public class MainActivity extends AppCompatActivity implements PictureIndicatorV
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
                 pictureIndicatorView.onPageScrolled(position,positionOffset,positionOffsetPixels);
-                circleIndicator.onPageScrolled(position,positionOffset,positionOffsetPixels);
+                //circleIndicator.onPageScrolled(position,positionOffset,positionOffsetPixels);
             }
 
             @Override
-            public void onPageSelected(int position) {}
+            public void onPageSelected(int position) {
+                pictureIndicatorView.onPageSelected(position);
+                circleIndicator.onPageSelected(position);
+            }
 
             @Override
             public void onPageScrollStateChanged(int state) {}

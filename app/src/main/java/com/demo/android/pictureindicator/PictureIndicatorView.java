@@ -6,7 +6,10 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.Rect;
 import android.graphics.RectF;
+import android.text.TextPaint;
 import android.util.AttributeSet;
 import android.view.Gravity;
 import android.view.View;
@@ -28,6 +31,10 @@ public class PictureIndicatorView extends LinearLayout implements  OnTabChangeLi
     private int titleNormalColor;
     private int titleSelectedColor;
     private onTabChanged mOnTabChangeListener;
+    private float topdistance;
+    private int titletextsize;
+    private TextPaint textPaint;
+
     public void setmOnTabChangeListener(onTabChanged mOnTabChangeListener) {
         this.mOnTabChangeListener = mOnTabChangeListener;
     }
@@ -46,10 +53,14 @@ public class PictureIndicatorView extends LinearLayout implements  OnTabChangeLi
                 R.mipmap.ic_launcher);
         bitmap = BitmapFactory.decodeResource(getResources(), resourceId);
         initTranslation=array.getDimension(R.styleable.PictureIndicatorView_initTranslation,0);
+        topdistance = array.getDimension(R.styleable.PictureIndicatorView_topdistance,dp2px(15));
         visibleTabCount=array.getInt(R.styleable.PictureIndicatorView_visibleCount,4);
         titleNormalColor = array.getColor(R.styleable.PictureIndicatorView_titlenormalcolor, Color.BLACK);
         titleSelectedColor = array.getColor(R.styleable.PictureIndicatorView_titleseletedcolor,
                 Color.GREEN);
+        titletextsize = array.getDimensionPixelSize(R.styleable.PictureIndicatorView_titletextsize,15);
+        textPaint = new TextPaint(Paint.ANTI_ALIAS_FLAG);
+        textPaint.setTextSize(dp2px(titletextsize));
         array.recycle();
     }
     @Override
@@ -57,9 +68,12 @@ public class PictureIndicatorView extends LinearLayout implements  OnTabChangeLi
         super.onSizeChanged(w, h, oldw, oldh);
         rectF = new RectF();
         rectF.left=0;
-        rectF.top=getMeasuredHeight()-dp2px(15);
-        rectF.right= getScreenWidth()/visibleTabCount-2*initTranslation;
-        rectF.bottom= getMeasuredHeight()-dp2px(5);
+        rectF.right= w/visibleTabCount-2*initTranslation;
+        float height=(rectF.right-rectF.left)*bitmap.getHeight()/bitmap.getWidth();
+        Rect rect=new Rect();
+        textPaint.getTextBounds("2014",0,"2014".length(),rect);
+        rectF.top=rect.height()/2+h/2+topdistance;
+        rectF.bottom=rectF.top+height;
     }
     @Override
     protected void dispatchDraw(Canvas canvas) {
@@ -79,7 +93,7 @@ public class PictureIndicatorView extends LinearLayout implements  OnTabChangeLi
                 params.width = getScreenWidth() / visibleTabCount;
                 textView.setGravity(Gravity.CENTER);
                 textView.setTextColor(i==0?titleSelectedColor:titleNormalColor);
-                textView.setTextSize(10);
+                textView.setTextSize(titletextsize);
                 textView.setLayoutParams(params);
                 textView.setText(list.get(i));
                 addView(textView);
@@ -116,7 +130,7 @@ public class PictureIndicatorView extends LinearLayout implements  OnTabChangeLi
         }
     }
     private void scroll(int position, float positionOffset) {
-        resetTextViewColor(position);
+
         mTranslationX =  (getMeasuredWidth() / visibleTabCount )*  (position + positionOffset);
         int tabWidth = getScreenWidth() / visibleTabCount;
         if (positionOffset > 0 && (position >= visibleTabCount - 2) && getChildCount() > visibleTabCount&& position < (getChildCount()-2)) {
@@ -145,7 +159,9 @@ public class PictureIndicatorView extends LinearLayout implements  OnTabChangeLi
     }
 
     @Override
-    public void onPageSelected(int position) {}
+    public void onPageSelected(int position) {
+        resetTextViewColor(position);
+    }
 
     @Override
     public void onPageScrollStateChanged(int state) {}

@@ -82,18 +82,19 @@ public class CircleIndicator extends View implements OnTabChangeListener{
         invalidate();
     }
     //设置红色圆移动的距离
-    private void setCircleSize(int position, float positionOffset, int positionOffsetPixels) {
+    private void setCircleSize(int position) {
         current = position;
         invalidate();
     }
 
     @Override
     public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-        setCircleSize(position, positionOffset, positionOffsetPixels);
+
     }
 
     @Override
     public void onPageSelected(int position) {
+        setCircleSize(position);
         current=position;
         invalidate();
     }

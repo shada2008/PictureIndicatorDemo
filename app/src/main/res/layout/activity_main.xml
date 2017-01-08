@@ -14,15 +14,18 @@
     <com.demo.android.pictureindicator.PictureIndicatorView
         android:id="@+id/pictureindicator"
         android:layout_width="match_parent"
-        app:indicator="@drawable/tab_current"
-        android:layout_height="45dp"
+        app:indicator="@drawable/ensure"
+        android:layout_height="50dp"
         app:initTranslation="10dp"
         app:titlenormalcolor="#000"
-        app:titleseletedcolor="#0f0" />
+        app:titleseletedcolor="#0f0"
+        app:topdistance="0dp"
+        android:background="#dedede"
+        />
     <com.demo.android.pictureindicator.CircleIndicator
         android:id="@+id/circleindicator"
         android:layout_width="match_parent"
-        android:layout_height="20dp"
+        android:layout_height="10dp"
         android:layout_alignParentBottom="true"
         app:gap="10dp"
         android:layout_marginBottom="20dp"/>
